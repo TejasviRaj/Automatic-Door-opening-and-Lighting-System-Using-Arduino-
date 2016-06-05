@@ -1,50 +1,54 @@
 #define reset -100
-#define closed 0
+
+#define closed 0 //door conditions
 #define opened 1
-#define leddoor 0
+#define opening 2
+#define closing 3
+
+#define leddoor 0  //input pins
 #define ledone 1
 #define ledtwo 2
-#define ledthree 3
-#define ledfour 4
-#define contactclose 5
+#define contactclose 5 
 #define contactopen 6
-#define motorone 7
+
+#define motorone 7 //output pins
 #define motortwo 8
 #define bulb 9
+
 #define delayopen 100
 #define delayclose 100
-#define inattempt 1
+
+#define inattempt 1 //attempts
 #define outattempt 2
 #define noattempt 0
+
 #define blocked HIGH
 #define unblocked LOW
+
 #define touched HIGH
 #define untouched LOW
 
-int in=0,out=0,door=closed, attempt=noattempt,lastattempt=noattempt;
-unsigned long time0=reset,time1=reset,time2=reset,time3=reset,time4=reset,timercount;
-boolean laststatus1=unblocked,laststatus2=unblocked,laststatus3=unblocked,laststatus4=unblocked,laststatus0=unblocked;
+int in=0,out=0,door=closed, blockattempt=noattempt,unblockattempt=noattempt;
+unsigned long time1b=reset,time2b=reset,time0=reset,time1u=reset,time2u=reset,timercount;
+boolean laststatus1=unblocked,laststatus2=unblocked,laststatus0=unblocked;
 
 void light();
 void opendoor();
 void closedoor();
-void countpeople();
-//void timer();
-//void securitycheck();
+void countpeople(); // to count people , call reset and closedoor
 void timerecord();
 void timeropen();
 void timerclose();
 void motoropendoor();
 void motorclosedoor();
 void motorstop();
+void reset_data();
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(leddoor,INPUT);
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
-  pinMode(ledthree,INPUT);
-  pinMode(ledfour,INPUT);
   pinMode(contactclose,INPUT);
   pinMode(contactopen, INPUT);
   pinMode(motorone,OUTPUT);
@@ -54,40 +58,15 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  timerecord();
   countperson();
   light();
-  timerecord();
+  
 
- if (time1<time2&&time1>=0&&time2>=0&&door==closed)
-    {
+ if ((time1b>0 || time2b>0) &&door==closed)
       opendoor();
-      loop();
-    }
-
-
-    
-     if (time1>time2&&time1>=0&&time2>=0&&door==opened)
-    {
-        closedoor();
-     
-      loop();
-    }
-
-
-    if (time3<time4&&time3>=0&&time4>=0&&door==opened)
-    {
-      closedoor();
-      loop();
-    }
-
-    if (time3>time4&&time3>=0&&time4>=0&&door==closed)
-    {
-      opendoor();
-      loop();
-    }
-    
-    
-} //loop terminates
+      
+    } //loop terminates
 
 
 
@@ -95,47 +74,28 @@ void timerecord()
 {
   if (digitalRead(ledone)==blocked && laststatus1==unblocked)
    {
-    time1=millis();
+    time1b=millis();
     laststatus1=blocked;
    }
-   else if (digitalRead(ledone)==unblocked)
-   laststatus1=unblocked;
+
 
    
-  if (digitalRead(ledtwo)==blocked && laststatus2==unblocked)
+   else if (digitalRead(ledone)==unblocked && laststatus1==blocked)
    {
-    time2=millis();
+    time1u=millis();
+    laststatus1=unblocked;
+   }
+   
+    if (digitalRead(ledtwo)==blocked && laststatus2==unblocked)
+   {
+    time2b=millis();
     laststatus2=blocked;
    }
-   else if (digitalRead(ledtwo)==unblocked)
-   laststatus2=unblocked;
-
-   
-   if (digitalRead(ledthree)==blocked && laststatus3==unblocked)
+   else if (digitalRead(ledtwo)==unblocked && laststatus2==blocked)
    {
-    time3=millis();
-    laststatus3=blocked;
+    time2u=millis();
+    laststatus2=unblocked;
    }
-   else if (digitalRead(ledthree)==unblocked)
-   laststatus3=unblocked;
-
-   
-   if (digitalRead(ledfour)==blocked && laststatus4==unblocked)
-   {
-    time4=millis();
-    laststatus4=blocked;
-   }
-   else if (digitalRead(ledfour)==unblocked)
-   laststatus4=unblocked;
-
-   
-   if (digitalRead(leddoor)==blocked && laststatus0==unblocked)
-   {
-    time0=millis();
-    laststatus0=blocked;
-   }
-   else if (digitalRead(leddoor)==unblocked)
-   laststatus0=unblocked;
 
 }
 
@@ -149,6 +109,7 @@ void light()
 
 void opendoor()
 {
+  door=opening;
   motoropendoor();
   
    do
@@ -165,6 +126,7 @@ void opendoor()
 
 void closedoor()
 {
+  door=closing;
   motorclosedoor();
  
   do
@@ -234,39 +196,59 @@ void countperson()
 {
 
 
-   if (time1<time2 && time2< time0 && time0<time3 && time3<time4 && time1>=0 &&time2>=0 &&time3>=0 &&time4>=0 &&time0>=0)
-   attempt=inattempt;
+   if (time1b<time2b  && time1b>=0 &&time2b>=0 && blockattempt!=outattempt)
+   blockattempt=inattempt;
 
-    if (time1>time2 && time2> time0 && time0>time3 && time3>time4 && time1>=0 &&time2>=0 &&time3>=0 &&time4>=0 &&time0>=0)
-   attempt=outattempt;
+    if ( time1b>time2b && time1b>=0 &&time2b>=0 && blockattempt!=inattempt)
+   blockattempt=outattempt;
 
-   if (attempt==inattempt && lastattempt!=outattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked &&digitalRead(leddoor)==unblocked)
+   if (time1u<time2u  && time1u>=0 &&time2u>=0 )
+   unblockattempt=inattempt;
+
+    if (time1u>time2u &&  time1u>=0 &&time2u>=0)
+   unblockattempt=outattempt;
+
+   if (blockattempt==inattempt && unblockattempt==inattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(leddoor)==unblocked)
    {
     in=in +1;
-    time0=time1=time2=time3=time4=reset;
-    lastattempt=noattempt;
-    attempt=noattempt;
+    reset_data();
+    if (door==opened)
+    closedoor();
    }
 
-   else if (attempt==inattempt && lastattempt!=outattempt) lastattempt=inattempt;
 
-  if (attempt==outattempt && lastattempt!=inattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked &&digitalRead(leddoor)==unblocked )
+
+   else if (blockattempt==outattempt && unblockattempt==outattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(leddoor)==unblocked)
    {
     out=out +1;
-    time0=time1=time2=time3=time4=reset;
-    lastattempt=noattempt;
-    attempt=noattempt;
+    reset_data();
+    if (door==opened)
+    closedoor();
    }
 
-   else if (attempt==outattempt && lastattempt!=inattempt) lastattempt=outattempt;
 
-
-   if ((attempt==outattempt && lastattempt==inattempt)||(attempt==inattempt && lastattempt==outattempt) &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked &&digitalRead(leddoor)==unblocked )
+   else if ((blockattempt==inattempt && unblockattempt==outattempt)||(unblockattempt==inattempt && blockattempt==outattempt) &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(leddoor)==unblocked )
      {
-            time0=time1=time2=time3=time4=reset;
-           lastattempt=noattempt;
-           attempt=noattempt;
+          reset_data();
+          if (door==opened)
+          closedoor();
      }
+     
+           else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo==unblocked) && digitalRead (leddoor)== unblocked && door== opened)
+           {
+           closedoor();
+           reset_data();
+           }
+     
+}
+
+
+
+void reset_data()
+{
+   time0=time1b=time1u=time2u=time2b=reset;
+   blockattempt==noattempt;
+   unblockattempt==noattempt;
 }
 
 
