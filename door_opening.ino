@@ -29,8 +29,8 @@ void light();
 void opendoor();
 void closedoor();
 void countpeople();
-void timer();
-void securitycheck();
+//void timer();
+//void securitycheck();
 void timerecord();
 void timeropen();
 void timerclose();
@@ -185,7 +185,7 @@ void timeropen()
  timerecord();
  countperson();
  light();
-  } while (millis() -timercount> delayopen);
+  } while (millis() -timercount< delayopen);
   
 }
 
@@ -200,7 +200,7 @@ void timerclose()
  timerecord();
  countperson();
  light();
-  } while (millis() -timercount> delayclose);
+  } while (millis() -timercount< delayclose);
   
 }
 
@@ -240,7 +240,7 @@ void countperson()
     if (time1>time2 && time2> time0 && time0>time3 && time3>time4 && time1>=0 &&time2>=0 &&time3>=0 &&time4>=0 &&time0>=0)
    attempt=outattempt;
 
-   if (attempt==inattempt && lastattempt!=outattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked )
+   if (attempt==inattempt && lastattempt!=outattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked &&digitalRead(leddoor)==unblocked)
    {
     in=in +1;
     time0=time1=time2=time3=time4=reset;
@@ -250,7 +250,7 @@ void countperson()
 
    else if (attempt==inattempt && lastattempt!=outattempt) lastattempt=inattempt;
 
-  if (attempt==outattempt && lastattempt!=inattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked )
+  if (attempt==outattempt && lastattempt!=inattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked &&digitalRead(leddoor)==unblocked )
    {
     out=out +1;
     time0=time1=time2=time3=time4=reset;
@@ -261,7 +261,7 @@ void countperson()
    else if (attempt==outattempt && lastattempt!=inattempt) lastattempt=outattempt;
 
 
-   if ((attempt==outattempt && lastattempt==inattempt)||(attempt==inattempt && lastattempt==outattempt) &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked )
+   if ((attempt==outattempt && lastattempt==inattempt)||(attempt==inattempt && lastattempt==outattempt) &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(ledthree)==unblocked &&digitalRead(ledfour)==unblocked &&digitalRead(leddoor)==unblocked )
      {
             time0=time1=time2=time3=time4=reset;
            lastattempt=noattempt;
