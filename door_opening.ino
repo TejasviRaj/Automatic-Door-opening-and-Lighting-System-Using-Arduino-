@@ -1,19 +1,19 @@
-#define reset -100
 
+#define reset 0
 #define closed 0 //door conditions
 #define opened 1
 #define opening 2
 #define closing 3
 
-#define leddoor 0  //input pins
-#define ledone 1
+#define leddoor 1 //input pins
+#define ledone 0
 #define ledtwo 2
 #define contactclose 5 
 #define contactopen 6
 
-#define motorone 7 //output pins
-#define motortwo 8
-#define bulb 9
+#define motorone 8 //output pins
+#define motortwo 9
+#define bulb 10
 
 #define delayopen 100
 #define delayclose 100
@@ -27,6 +27,8 @@
 
 #define touched HIGH
 #define untouched LOW
+
+
 
 int in=0,out=0,door=closed, blockattempt=noattempt,unblockattempt=noattempt;
 unsigned long time1b=reset,time2b=reset,time0=reset,time1u=reset,time2u=reset,timercount;
@@ -54,17 +56,22 @@ void setup() {
   pinMode(motorone,OUTPUT);
   pinMode (motortwo, OUTPUT);
   pinMode (bulb,OUTPUT);
+  digitalWrite(bulb,LOW);
+  digitalWrite(motorone,LOW);
+  digitalWrite(motortwo,LOW);
+  
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   timerecord();
   countperson();
-  light();
+  light(); 
   
 
- if ((time1b>0 || time2b>0) &&door==closed)
-      opendoor();
+if ((time1b>0 || time2b>0)  && door==closed)
+     { opendoor();
+     }
       
     } //loop terminates
 
@@ -196,16 +203,16 @@ void countperson()
 {
 
 
-   if (time1b<time2b  && time1b>=0 &&time2b>=0 && blockattempt!=outattempt)
+   if (time1b<time2b  && time1b>0 &&time2b>0 && blockattempt!=outattempt)
    blockattempt=inattempt;
 
-    if ( time1b>time2b && time1b>=0 &&time2b>=0 && blockattempt!=inattempt)
+    if ( time1b>time2b && time1b>0 &&time2b>0 && blockattempt!=inattempt)
    blockattempt=outattempt;
 
-   if (time1u<time2u  && time1u>=0 &&time2u>=0 )
+   if (time1u<time2u  && time1u>0 &&time2u>0 )
    unblockattempt=inattempt;
 
-    if (time1u>time2u &&  time1u>=0 &&time2u>=0)
+    if (time1u>time2u &&  time1u>0 &&time2u>0)
    unblockattempt=outattempt;
 
    if (blockattempt==inattempt && unblockattempt==inattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(leddoor)==unblocked)
