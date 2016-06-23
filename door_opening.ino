@@ -7,8 +7,14 @@
 
 #define leddoor 1 //input pins
 #define ledone 0
+<<<<<<< HEAD
 #define ledtwo 2 
 
+=======
+#define ledtwo 2
+#define contactclose 5 
+#define contactopen 6
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
 
 #define motorone 8 //output pins
 #define motortwo 9
@@ -24,6 +30,11 @@
 #define blocked HIGH
 #define unblocked LOW
 
+<<<<<<< HEAD
+=======
+#define touched HIGH
+#define untouched LOW
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
 
 
 
@@ -36,8 +47,13 @@ void opendoor();
 void closedoor();
 void countpeople(); // to count people , call reset and closedoor
 void timerecord();
+<<<<<<< HEAD
 void timeropen(unsigned long timercount);
 void timerclose(unsigned long timercount);
+=======
+void timeropen();
+void timerclose();
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
 void motoropendoor();
 void motorclosedoor();
 void motorstop();
@@ -48,7 +64,12 @@ void setup() {
   pinMode(leddoor,INPUT);
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
+<<<<<<< HEAD
 
+=======
+  pinMode(contactclose,INPUT);
+  pinMode(contactopen, INPUT);
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
   pinMode(motorone,OUTPUT);
   pinMode (motortwo, OUTPUT);
   pinMode (bulb,OUTPUT);
@@ -115,8 +136,16 @@ void opendoor()
   door=opening;
   motoropendoor();
   
+<<<<<<< HEAD
     timercount=millis();
     timeropen(millis()); //delay while timerecording and counting 
+=======
+   do
+   {
+    timercount=millis();
+    timeropen(); //delay while timerecording and counting 
+   } while (digitalRead(contactopen)!=touched);
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
    motorstop();
   door=opened;
   return;
@@ -129,16 +158,28 @@ void closedoor()
   door=closing;
   motorclosedoor();
  
+<<<<<<< HEAD
  
     timerclose(millis()); //delay while timerecording and counting and preventing accident
   
+=======
+  do
+   {
+    timercount=millis();
+    timerclose(); //delay while timerecording and counting and preventing accident
+   } while (digitalRead(contactclose)!=touched);
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
    motorstop();
    door=closed;
   return;
 }
 
 
+<<<<<<< HEAD
 void timeropen(unsigned long timercount)
+=======
+void timeropen()
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
 {
   do
   {
@@ -150,7 +191,11 @@ void timeropen(unsigned long timercount)
 }
 
 
+<<<<<<< HEAD
 void timerclose(unsigned long timercount)
+=======
+void timerclose()
+>>>>>>> 52b4232ee17703a82d02d1a5b9927e712b0aedc1
 {
   do
   {
