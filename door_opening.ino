@@ -9,10 +9,13 @@
 #define ledone 0
 #define ledtwo 2 
 
-
-#define motorone 8 //output pins
-#define motortwo 9
 #define bulb 10
+
+#define motoropenhigh 8 //output pins
+#define motorclosehigh 9
+#define PWM 7
+
+#define motorspeed 100 //0 to 255 for 0 to 5V
 
 #define delayopen 100
 #define delayclose 100
@@ -28,7 +31,7 @@
 
 
 int in=0,out=0,door=closed, blockattempt=noattempt,unblockattempt=noattempt;
-unsigned long time1b=reset,time2b=reset,time0=reset,time1u=reset,time2u=reset,timercount;
+unsigned long time1b=reset,time2b=reset,time0=reset,time1u=reset,time2u=reset;
 boolean laststatus1=unblocked,laststatus2=unblocked,laststatus0=unblocked;
 
 void light();
@@ -49,12 +52,16 @@ void setup() {
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
 
-  pinMode(motorone,OUTPUT);
-  pinMode (motortwo, OUTPUT);
+  pinMode(motoropenhigh,OUTPUT);
+  pinMode (motorclosehigh, OUTPUT);
+  pinMode (PWM,OUTPUT);
+
+  
   pinMode (bulb,OUTPUT);
   digitalWrite(bulb,LOW);
-  digitalWrite(motorone,LOW);
-  digitalWrite(motortwo,LOW);
+  digitalWrite(motoropenhigh,LOW);
+  digitalWrite(motorclosehigh,LOW);
+  analogWrite (PWM,motorspeed);
   
 }
 
@@ -115,7 +122,7 @@ void opendoor()
   door=opening;
   motoropendoor();
   
-    timercount=millis();
+    
     timeropen(millis()); //delay while timerecording and counting 
    motorstop();
   door=opened;
@@ -166,28 +173,28 @@ void timerclose(unsigned long timercount)
 
 void motoropendoor()
 {
-  if (motorone!=HIGH || motortwo !=LOW)
+  if (motoropenhigh!=HIGH || motorclosehigh !=LOW)
   {
-  digitalWrite(motorone,HIGH);
-  digitalWrite(motortwo,LOW);
+  digitalWrite(motoropenhigh,HIGH);
+  digitalWrite(motorclosehigh,LOW);
   }
 }
 
 
 void motorclosedoor()
   {
-    if (motorone!=LOW || motortwo !=HIGH)
+    if (motoropenhigh!=LOW || motorclosehigh !=HIGH)
     {
-  digitalWrite(motorone,LOW);
-  digitalWrite(motortwo,HIGH);
+  digitalWrite(motoropenhigh,LOW);
+  digitalWrite(motorclosehigh,HIGH);
     }
 }
 
 
 void motorstop()
   {
-  digitalWrite(motorone,LOW);
-  digitalWrite(motortwo,LOW);
+  digitalWrite(motoropenhigh,LOW);
+  digitalWrite(motorclosehigh,LOW);
 }
 
 void countperson()
