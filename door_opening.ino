@@ -1,24 +1,26 @@
 
+#include<SoftwareSerial.h>
+SoftwareSerial TRP(3,11);
 #define reset 0
 #define closed 0 //door conditions
 #define opened 1
 #define opening 2
 #define closing 3
 
-#define leddoor 1 //input pins
-#define ledone 0
-#define ledtwo 2 
+#define leddoor 12 //input pins
+#define ledone 13
+#define ledtwo 8 
 
-#define bulb 10
+#define bulb 7
 
-#define motoropenhigh 8 //output pins
-#define motorclosehigh 9
-#define PWM 7
+#define motoropenhigh 2 //output pins
+#define motorclosehigh 4
+#define PWM 3
 
-#define motorspeed 100 //0 to 255 for 0 to 5V
+#define motorspeed 255 //0 to 255 for 0 to 5V
 
-#define delayopen 100
-#define delayclose 100
+#define delayopen 2500
+#define delayclose 2500
 
 #define inattempt 1 //attempts
 #define outattempt 2
@@ -48,6 +50,7 @@ void reset_data();
 
 void setup() {
   // put your setup code here, to run once:
+  TRP.begin(9600);
   pinMode(leddoor,INPUT);
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
@@ -111,10 +114,29 @@ void timerecord()
 
 void light()
 {
-  if (in>out)
+  if (in>out && bulb!=HIGH)
   digitalWrite(bulb,HIGH);
   else
   digitalWrite(bulb,LOW);
+ int a=5;
+ TRP.flush();
+  TRP.print("in= ");
+  TRP.print(in);
+  TRP.print(",,out= ");
+  TRP.print(out);
+  TRP.print(",,blockattempt=");
+  TRP.print(blockattempt);
+  TRP.print(",,unblockattempt=");
+  TRP.print(unblockattempt);
+  TRP.print(",,time1b=");
+  TRP.print(time1b);
+    TRP.print(",,time1u=");
+  TRP.print(time1u);
+   TRP.print(",,time2b=");
+  TRP.print(time2b);
+    TRP.print(",,time2u=");
+  TRP.println(time2u);
+  
 }
 
 void opendoor()
@@ -252,8 +274,8 @@ void countperson()
 void reset_data()
 {
    time0=time1b=time1u=time2u=time2b=reset;
-   blockattempt==noattempt;
-   unblockattempt==noattempt;
+   blockattempt=noattempt;
+   unblockattempt=noattempt;
 }
 
 
