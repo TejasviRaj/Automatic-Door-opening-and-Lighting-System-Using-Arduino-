@@ -1,6 +1,4 @@
 
-#include<SoftwareSerial.h>
-SoftwareSerial TRP(3,11);
 #define reset 0
 #define closed 0 //door conditions
 #define opened 1
@@ -50,7 +48,7 @@ void reset_data();
 
 void setup() {
   // put your setup code here, to run once:
-  TRP.begin(9600);
+  
   pinMode(leddoor,INPUT);
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
@@ -132,28 +130,7 @@ void light()
   digitalWrite(bulb,HIGH);
   else
   digitalWrite(bulb,LOW);
- int a=5;
- TRP.flush();
-  TRP.print("in= ");
-  TRP.print(in);
-  TRP.print(",,out= ");
-  TRP.print(out);
-  TRP.print(",,blockattempt=");
-  TRP.print(blockattempt);
-  TRP.print(",,unblockattempt=");
-  TRP.print(unblockattempt);
-  TRP.print(",,time1b=");
-  TRP.print(time1b);
-    TRP.print(",,time1u=");
-  TRP.print(time1u);
-  TRP.print(",,time0b=");
-  TRP.print(time0b);
-    TRP.print(",,time0u=");
-  TRP.print(time0u);
-   TRP.print(",,time2b=");
-  TRP.print(time2b);
-    TRP.print(",,time2u=");
-  TRP.println(time2u);
+ 
   
 }
 
