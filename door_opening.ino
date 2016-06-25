@@ -33,7 +33,7 @@ SoftwareSerial TRP(3,11);
 
 
 int in=0,out=0,door=closed, blockattempt=noattempt,unblockattempt=noattempt;
-unsigned long time1b=reset,time2b=reset,time0=reset,time1u=reset,time2u=reset;
+unsigned long time1b=reset,time2b=reset,time0b=reset,time0u=reset, time1u=reset,time2u=reset;
 boolean laststatus1=unblocked,laststatus2=unblocked,laststatus0=unblocked;
 
 void light();
@@ -110,6 +110,20 @@ void timerecord()
     laststatus2=unblocked;
    }
 
+   if (digitalRead(leddoor)==blocked && laststatus0==unblocked)
+   {
+    time0b=millis();
+    laststatus0=blocked;
+   }
+
+
+   
+   else if (digitalRead(leddoor)==unblocked && laststatus0==blocked)
+   {
+    time0u=millis();
+    laststatus0=unblocked;
+   }
+
 }
 
 void light()
@@ -132,6 +146,10 @@ void light()
   TRP.print(time1b);
     TRP.print(",,time1u=");
   TRP.print(time1u);
+  TRP.print(",,time0b=");
+  TRP.print(time0b);
+    TRP.print(",,time0u=");
+  TRP.print(time0u);
    TRP.print(",,time2b=");
   TRP.print(time2b);
     TRP.print(",,time2u=");
@@ -183,7 +201,7 @@ void timerclose(unsigned long timercount)
 {
   do
   {
-    if (digitalRead(leddoor)==blocked)
+    if (digitalRead(leddoor)==blocked ||digitalRead(ledone)==blocked ||digitalRead(ledtwo)==blocked  )
     motorstop();
     else motorclosedoor();
  timerecord();
@@ -223,16 +241,16 @@ void countperson()
 {
 
 
-   if (time1b<time2b  && time1b>0 &&time2b>0 && blockattempt!=outattempt)
+   if (time1b<time0b && time0b< time2b && time1b>0 &&time2b>0 &&time0b>0 && blockattempt!=outattempt)
    blockattempt=inattempt;
 
-    if ( time1b>time2b && time1b>0 &&time2b>0 && blockattempt!=inattempt)
+    if ( time1b>time0b && time0b>time2b && time1b>0 &&time2b>0 && time0b>0 && blockattempt!=inattempt)
    blockattempt=outattempt;
 
-   if (time1u<time2u  && time1u>0 &&time2u>0 )
+   if (time1u<time0u && time0u<time2u  && time1u>0 &&time2u>0 && time0u>0 && unblockattempt!=outattempt)
    unblockattempt=inattempt;
 
-    if (time1u>time2u &&  time1u>0 &&time2u>0)
+    if (time1u>time0u  && time0u>time2u &&  time1u>0 &&time2u>0 && time0u>0 && unblockattempt!=inattempt)
    unblockattempt=outattempt;
 
    if (blockattempt==inattempt && unblockattempt==inattempt &&digitalRead(ledone)==unblocked &&digitalRead(ledtwo)==unblocked &&digitalRead(leddoor)==unblocked)
@@ -260,20 +278,26 @@ void countperson()
           if (door==opened)
           closedoor();
      }
+
      
-           else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo==unblocked) && digitalRead (leddoor)== unblocked && door== opened)
+     
+           else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead (leddoor)== unblocked && door== opened)
            {
            closedoor();
            reset_data();
            }
-     
+     else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead (leddoor)== unblocked )
+           {
+           
+           reset_data();
+           }
 }
 
 
 
 void reset_data()
 {
-   time0=time1b=time1u=time2u=time2b=reset;
+   time0b=time0u=time1b=time1u=time2u=time2b=reset;
    blockattempt=noattempt;
    unblockattempt=noattempt;
 }
