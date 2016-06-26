@@ -1,4 +1,6 @@
 
+#include<SoftwareSerial.h>
+SoftwareSerial TRP(3,11);
 #define reset 0
 #define closed 0 //door conditions
 #define opened 1
@@ -7,7 +9,7 @@
 
 #define leddoor 12 //input pins
 #define ledone 13
-#define ledtwo 8 
+#define ledtwo 8
 
 #define bulb 7
 
@@ -48,7 +50,7 @@ void reset_data();
 
 void setup() {
   // put your setup code here, to run once:
-  
+  TRP.begin(9600);
   pinMode(leddoor,INPUT);
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
@@ -57,26 +59,26 @@ void setup() {
   pinMode (motorclosehigh, OUTPUT);
   pinMode (PWM,OUTPUT);
 
-  
+
   pinMode (bulb,OUTPUT);
   digitalWrite(bulb,LOW);
   digitalWrite(motoropenhigh,LOW);
   digitalWrite(motorclosehigh,LOW);
   analogWrite (PWM,motorspeed);
-  
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   timerecord();
   countperson();
-  light(); 
-  
+  light();
+
 
 if ((time1b>0 || time2b>0)  && door==closed)
      { opendoor();
      }
-      
+
     } //loop terminates
 
 
@@ -90,13 +92,13 @@ void timerecord()
    }
 
 
-   
+
    else if (digitalRead(ledone)==unblocked && laststatus1==blocked)
    {
     time1u=millis();
     laststatus1=unblocked;
    }
-   
+
     if (digitalRead(ledtwo)==blocked && laststatus2==unblocked)
    {
     time2b=millis();
@@ -115,7 +117,7 @@ void timerecord()
    }
 
 
-   
+
    else if (digitalRead(leddoor)==unblocked && laststatus0==blocked)
    {
     time0u=millis();
@@ -126,21 +128,44 @@ void timerecord()
 
 void light()
 {
-  if (in>out && bulb!=HIGH)
+  if (in>out )
   digitalWrite(bulb,HIGH);
   else
   digitalWrite(bulb,LOW);
- 
-  
+
+
+  TRP.print("in= ");
+  TRP.print(in);
+  TRP.print(",,out= ");
+  TRP.print(out);
+  TRP.print(",,blockattempt=");
+  TRP.print(blockattempt);
+  TRP.print(",,unblockattempt=");
+  TRP.print(unblockattempt);
+  TRP.print(",,time1b=");
+  TRP.print(time1b);
+    TRP.print(",,time1u=");
+  TRP.print(time1u);
+  TRP.print(",,time0b=");
+  TRP.print(time0b);
+    TRP.print(",,time0u=");
+  TRP.print(time0u);
+   TRP.print(",,time2b=");
+  TRP.print(time2b);
+    TRP.print(",,time2u=");
+  TRP.println(time2u);
+
+
+
 }
 
 void opendoor()
 {
   door=opening;
   motoropendoor();
-  
-    
-    timeropen(millis()); //delay while timerecording and counting 
+
+
+    timeropen(millis()); //delay while timerecording and counting
    motorstop();
   door=opened;
   return;
@@ -152,10 +177,10 @@ void closedoor()
 {
   door=closing;
   motorclosedoor();
- 
- 
+
+
     timerclose(millis()); //delay while timerecording and counting and preventing accident
-  
+
    motorstop();
    door=closed;
   return;
@@ -170,7 +195,7 @@ void timeropen(unsigned long timercount)
  countperson();
  light();
   } while (millis() -timercount< delayopen);
-  
+
 }
 
 
@@ -185,12 +210,12 @@ void timerclose(unsigned long timercount)
  countperson();
  light();
   } while (millis() -timercount< delayclose);
-  
+
 }
 
 void motoropendoor()
 {
-  if (motoropenhigh!=HIGH || motorclosehigh !=LOW)
+
   {
   digitalWrite(motoropenhigh,HIGH);
   digitalWrite(motorclosehigh,LOW);
@@ -200,7 +225,7 @@ void motoropendoor()
 
 void motorclosedoor()
   {
-    if (motoropenhigh!=LOW || motorclosehigh !=HIGH)
+
     {
   digitalWrite(motoropenhigh,LOW);
   digitalWrite(motorclosehigh,HIGH);
@@ -256,8 +281,8 @@ void countperson()
           closedoor();
      }
 
-     
-     
+
+
            else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead (leddoor)== unblocked && door== opened)
            {
            closedoor();
@@ -265,7 +290,7 @@ void countperson()
            }
      else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead (leddoor)== unblocked )
            {
-           
+
            reset_data();
            }
 }
@@ -281,6 +306,5 @@ void reset_data()
 
 
 
- 
 
 
