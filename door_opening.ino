@@ -33,7 +33,7 @@
 
 int in=0,out=0,door=closed, blockattempt=noattempt,unblockattempt=noattempt;
 unsigned long time1b=reset,time2b=reset,time0b=reset,time0u=reset, time1u=reset,time2u=reset;
-boolean laststatus1=unblocked,laststatus2=unblocked,laststatus0=unblocked;
+boolean laststatus1=unblocked,laststatus2=unblocked,laststatus0=unblocked,flag;
 
 void light();
 void opendoor();
@@ -74,7 +74,7 @@ void loop() {
   light();
 
 
-if ((time1b>0 || time2b>0)  && door==closed)
+if (time1b>0 || time2b>0 && door==closed)       // point to be noted
      { opendoor();
      }
 
@@ -203,7 +203,10 @@ void timerclose(unsigned long timercount)
   do
   {
     if (digitalRead(leddoor)==blocked ||digitalRead(ledone)==blocked ||digitalRead(ledtwo)==blocked  )
+    {
     motorstop();
+    flag=1;
+    }
     else motorclosedoor();
  timerecord();
  countperson();
@@ -284,14 +287,24 @@ void countperson()
 
            else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead (leddoor)== unblocked && door== opened)
            {
+            reset_data();
            closedoor();
-           reset_data();
            }
+
+           else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead(leddoor)==unblocked && flag==1)
+           {
+            reset_data();
+            flag==0;
+            closedoor();
+           }
+           
      else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead (leddoor)== unblocked )
            {
 
            reset_data();
            }
+
+            
 }
 
 
