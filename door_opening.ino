@@ -1,26 +1,25 @@
-
-#include<SoftwareSerial.h>
-SoftwareSerial TRP(3,11);
+//#include<SoftwareSerial.h>
+//SoftwareSerial TRP(3,11);
 #define reset 0
 #define closed 0 //door conditions
 #define opened 1
 #define opening 2
 #define closing 3
 
-#define leddoor 12 //input pins
-#define ledone 13
-#define ledtwo 8
+#define leddoor 7 //input pins
+#define ledone 8
+#define ledtwo 4
 
-#define bulb 7
+#define bulb 2
 
-#define motoropenhigh 2 //output pins
-#define motorclosehigh 4
+#define motoropenhigh 12 //output pins
+#define motorclosehigh 13
 #define PWM 3
 
 #define motorspeed 255 //0 to 255 for 0 to 5V
 
-#define delayopen 2500
-#define delayclose 2500
+#define delayopen 2300
+#define delayclose 2300
 
 #define inattempt 1 //attempts
 #define outattempt 2
@@ -50,7 +49,7 @@ void reset_data();
 
 void setup() {
   // put your setup code here, to run once:
-  TRP.begin(9600);
+  Serial.begin(9600);
   pinMode(leddoor,INPUT);
   pinMode(ledone,INPUT);
   pinMode(ledtwo,INPUT);
@@ -134,26 +133,26 @@ void light()
   digitalWrite(bulb,LOW);
 
 
-  TRP.print("in= ");
-  TRP.print(in);
-  TRP.print(",,out= ");
-  TRP.print(out);
-  TRP.print(",,blockattempt=");
-  TRP.print(blockattempt);
-  TRP.print(",,unblockattempt=");
-  TRP.print(unblockattempt);
-  TRP.print(",,time1b=");
-  TRP.print(time1b);
-    TRP.print(",,time1u=");
-  TRP.print(time1u);
-  TRP.print(",,time0b=");
-  TRP.print(time0b);
-    TRP.print(",,time0u=");
-  TRP.print(time0u);
-   TRP.print(",,time2b=");
-  TRP.print(time2b);
-    TRP.print(",,time2u=");
-  TRP.println(time2u);
+  Serial.print("in= ");
+  Serial.print(in);
+  Serial.print(",,out= ");
+  Serial.print(out);
+  Serial.print(",,blockattempt=");
+  Serial.print(blockattempt);
+  Serial.print(",,unblockattempt=");
+  Serial.print(unblockattempt);
+  Serial.print(",,time1b=");
+  Serial.print(time1b);
+    Serial.print(",,time1u=");
+  Serial.print(time1u);
+  Serial.print(",,time0b=");
+  Serial.print(time0b);
+    Serial.print(",,time0u=");
+  Serial.print(time0u);
+   Serial.print(",,time2b=");
+  Serial.print(time2b);
+    Serial.print(",,time2u=");
+  Serial.println(time2u);
 
 
 
