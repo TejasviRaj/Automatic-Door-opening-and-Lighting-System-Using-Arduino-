@@ -1,4 +1,4 @@
-//#include<SoftwareSerial.h>
+ //#include<SoftwareSerial.h>
 //SoftwareSerial TRP(3,11);
 #define reset 0
 #define closed 0 //door conditions
@@ -12,14 +12,14 @@
 
 #define bulb 2
 
-#define motoropenhigh 12 //output pins
-#define motorclosehigh 13
+#define motoropenhigh 13 //output pins
+#define motorclosehigh 12
 #define PWM 3
 
 #define motorspeed 255 //0 to 255 for 0 to 5V
 
-#define delayopen 2300
-#define delayclose 2300
+#define delayopen 2000
+#define delayclose 2000
 
 #define inattempt 1 //attempts
 #define outattempt 2
@@ -95,7 +95,7 @@ void timerecord()
    else if (digitalRead(ledone)==unblocked && laststatus1==blocked)
    {
     time1u=millis();
-    laststatus1=unblocked;
+  laststatus1=unblocked;
    }
 
     if (digitalRead(ledtwo)==blocked && laststatus2==unblocked)
@@ -152,7 +152,15 @@ void light()
    Serial.print(",,time2b=");
   Serial.print(time2b);
     Serial.print(",,time2u=");
-  Serial.println(time2u);
+  Serial.print(time2u);
+Serial.print(",,last status 1=");\
+Serial.print(laststatus1);
+Serial.print(",,last status 2=");\
+Serial.print(laststatus2);
+Serial.print(",,last status door=");\
+Serial.print(laststatus0);
+Serial.print(",,door Starus=");
+Serial.println(door);
 
 
 
@@ -193,6 +201,9 @@ void timeropen(unsigned long timercount)
  timerecord();
  countperson();
  light();
+ if (time1b>0 || time2b>0 && door==closed)       // point to be noted
+     { opendoor();
+     }
   } while (millis() -timercount< delayopen);
 
 }
@@ -204,13 +215,16 @@ void timerclose(unsigned long timercount)
   {
     if (digitalRead(leddoor)==blocked ||digitalRead(ledone)==blocked ||digitalRead(ledtwo)==blocked  )
     {
-    motorstop();
+    opendoor();
     flag=1;
     }
     else motorclosedoor();
  timerecord();
  countperson();
  light();
+ if (time1b>0 || time2b>0 && door ==closed)       // point to be noted
+     { opendoor();
+     }
   } while (millis() -timercount< delayclose);
 
 }
@@ -294,7 +308,7 @@ void countperson()
            else if (digitalRead(ledone)==unblocked && digitalRead(ledtwo)==unblocked && digitalRead(leddoor)==unblocked && flag==1)
            {
             reset_data();
-            flag==0;
+            flag=0;
             closedoor();
            }
            
